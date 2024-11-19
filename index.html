@@ -79,4 +79,11 @@
       }
     });
   });
+
+  document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("*:not(body):not(html)").forEach(element => {
+    const randomAngle = (Math.random() * 4 - 2).toFixed(2); // Random number between -2 and 2
+    element.style.transform = `rotate(${randomAngle}deg)`;
+  });
+});
 </script>

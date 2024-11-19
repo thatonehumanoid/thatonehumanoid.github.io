@@ -51,13 +51,7 @@ img, video, iframe {
    font-size: 2rem;
 }
 
-/* Rotations */
-*:nth-child(odd):not(body):not(html) {
-   transform: rotate(2deg);
-}
-*:nth-child(even):not(body):not(html) {
-   transform: rotate(-2deg);
-}
+
 
 hr {
    width: 50% !important;
