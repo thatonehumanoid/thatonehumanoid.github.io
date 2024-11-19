@@ -47,7 +47,7 @@ img, video, iframe {
 ::cue {
    color: #d9e365;
    background-color: rgba(0, 0, 0, 0.7);
-   font-family: "Mono";
+   /* font-family: "Mono"; */
    font-size: 2rem;
 }
 
