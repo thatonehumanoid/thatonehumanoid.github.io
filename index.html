@@ -19,7 +19,8 @@
   <body>
     <div class="hotbar">
     Search By Date
-    <input type="date" id="dateSearch" placeholder="Search for a date" />
+    <input type="date" id="dateSearch">
+    <button id="searchButton">Search</button>
   </div>
   <br>
   <div>
@@ -65,8 +66,8 @@
   </body>
 </html>
 <script>
-  document.getElementById('dateSearch').addEventListener('input', function () {
-    const searchDate = this.value;
+  document.getElementById('searchButton').addEventListener('click', function () {
+    const searchDate = document.getElementById('dateSearch').value;
     const h1Elements = document.querySelectorAll('h1');
     
     h1Elements.forEach(h1 => {
