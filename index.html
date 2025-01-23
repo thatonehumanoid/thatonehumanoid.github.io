@@ -14,20 +14,54 @@
         border: 1px solid #cccccc;
         border-radius: 4px;
       }
+      .search-container {
+        margin-bottom: 20px;
+      }
+      .search-container input[type="text"] {
+        padding: 10px;
+        width: 300px;
+        font-size: 16px;
+        border: 1px solid #cccccc;
+        border-radius: 4px;
+      }
+      .search-container button {
+        padding: 10px 15px;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .search-container button:hover {
+        background-color: #45a049;
+      }
+      .highlight {
+        background-color: lightslategray;
+        animation: highlight-animation 1s;
+      }
+      @keyframes highlight-animation {
+        from {
+          background-color: lightslategray;
+        }
+        to {
+          background-color: transparent;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="hotbar">
-    Search By Date
-    <input type="date" id="dateSearch">
-    <button id="searchButton">Go</button>
-  </div>
+      <!-- Search bar and button -->
+        <input type="text" id="searchQuery" placeholder="Enter phrase to search" />
+        <button onclick="searchPosts()">Search</button>
+    </div>
   <br>
   <div>
     <h1>
-     2025-01-23 07:42 MST
+     2024-01-13 07:42 MST
   </h1>
-  I really overestimated how mant people read this. The traffic statisitcs say my page was visited 18 times just yesterday but 90% of them where just me checking that it works after trying things with images. There might be no one at all reading this.
+  I really overestimated how mant people read this. The traffic statisitcs say my page was visited 18 times just yesterday but half of them where just me checking that it works after trying things with images. There might be no one at all reading this.
   <br><br>
   Well, to anyone that is reading this, forget about the scavanger hunt thing. That was just a stupid attempt to get people to stay and read my narcissistic and self-absorbed problems. And because of that, I'm sorry. Sorry for making my problems seem bigger than they are. Sorry for having to read this sad excuse for my life. Sorry for ever making you worried about me.
   <br><br>
@@ -36,7 +70,7 @@
 <br>
   <div>
     <h1>
-     2025-01-21 20:59 MST
+     2024-01-21 20:59 MST
   </h1>
 To the few people who view my journal, I'd like to send you on a geoguesser scavanger hunt thingy. I'll post a photo of a location, then you will try to find the address or take the same photo from the same spot, and post it here: 
 <br><br> 
@@ -51,7 +85,7 @@ So here is the first image, good luck.
 <br>
   <div>
     <h1>
-     2025-01-20 16:16 MST
+     2024-01-20 16:16 MST
   </h1>
   I don't fear death, I fear what I would leave behind. I fear that I if I die early I would be leaving all my friends and the people that rely on me in a hard spot. I wouldn't be there to help them with their problems, to talk with them when they need it most. I would be abandoning them without knowing if they could continue on without me. 
   <br><br>
@@ -60,21 +94,21 @@ So here is the first image, good luck.
 <br>
   <div>
     <h1>
-     2025-01-16 10:43 MST
+     2024-01-16 10:43 MST
   </h1>
 You want to know what I thought after posting these? Wouldn't it be fun if I post like 10 times in 2 hours just to freak people out. I'm a terrible person.
   </div>
 <br>
   <div>
     <h1>
-     2025-01-16 10:27 MST
+     2024-01-16 10:27 MST
   </h1>
     Is this whole site just a sham for me to get a reaction out of people? Or is it how I actually feel?
   </div>
 <br>
   <div>
     <h1>
-     2025-01-16 10:16 MST
+     2024-01-16 10:16 MST
   </h1>
     Would you like to know what I think about every second of the day?
     <br><br>
@@ -87,28 +121,28 @@ You want to know what I thought after posting these? Wouldn't it be fun if I pos
 <br>
   <div>
     <h1>
-     2025-01-14 07:32 MST
+     2024-01-14 07:32 MST
   </h1>
   How do I tell my parents I'm not religious? I should wait until I'm fully independent then tell them, but the longer I stay the more unsafe I feel. Everyone claims that it's the best and friendliest religion there is. I have found that to be extremely false, even my own parents mentally and physically harm me. 
   </div>
 <br>
   <div>
     <h1>
-     2025-01-10 07:45 MST
+     2024-01-10 07:45 MST
   </h1>
   I hate shaving my knees with the crappy disposable BIC razors I have. They skin my knees like they're potatoes. I gotta buy more heads for my Gillette razor and trash the BIC ones.
   </div>
 <br>
   <div>
     <h1>
-     2025-01-07 11:13 MST
+     2024-01-07 11:13 MST
   </h1>
     The american pledge of allegiance is very ironic. "Liberty and Justice for all" Like that happens anymore. We may be one nation but we are a divided people.
   </div>
 <br>
   <div>
     <h1>
-     2025-01-06 14:18 MST
+     2024-01-06 14:18 MST
   </h1>
     Update on the previous post, nothing has gotten better, in fact probably worse. My average asleep time goes from 03:30 to 06:00. I just can't sleep. Even melatonin won't help me.
     <br>
@@ -319,20 +353,32 @@ The stranger's friend then replied, "Thats gay."
   </body>
 </html>
 <script>
-  document.getElementById('searchButton').addEventListener('click', function () {
-    const searchDate = document.getElementById('dateSearch').value;
-    const h1Elements = document.querySelectorAll('h1');
-    
-    h1Elements.forEach(h1 => {
-      const h1Text = h1.textContent || h1.innerText;
-      const regex = /\b\d{4}-\d{2}-\d{2}\b/; // Regex to match yyyy-mm-dd format
-      const match = h1Text.match(regex);
-      
-      if (match && match[0] === searchDate) {
-        h1.scrollIntoView({ behavior: 'smooth', block: 'center' });
+   function searchPosts() {
+      // Clear any previous highlights
+      document.querySelectorAll('.highlight').forEach((highlighted) => {
+        highlighted.classList.remove('highlight');
+      });
+
+      const query = document.getElementById('searchQuery').value.toLowerCase();
+      if (!query) return;
+
+      // Loop through all journal entries and highlight the matching phrase
+      const entries = document.querySelectorAll('div h1, div p, div');
+      let found = false;
+
+      entries.forEach((entry) => {
+        if (entry.textContent.toLowerCase().includes(query)) {
+          found = true;
+          // Add highlight class to the entry
+          entry.classList.add('highlight');
+          entry.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+
+      if (!found) {
+        alert('No matching entries found');
       }
-    });
-  });
+    }
 
   document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("*:not(body):not(html)").forEach(element => {
