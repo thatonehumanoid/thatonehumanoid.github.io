@@ -21,7 +21,7 @@ body {
    padding: 2em;
 }
 
-*:not(html):not(body) {
+*:not(html):not(body):not(strong):not(em) {
    font-family: 'Schoolbell', arial, serif;
    font-size: 1.25rem;
    background: transparent;
