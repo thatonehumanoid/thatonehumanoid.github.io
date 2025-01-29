@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Formatter</title>
+    <script>
+        let isBold = false;
+        let isItalic = false;
+
+        function formatText() {
+            let inputText = document.getElementById("textInput").innerHTML;
+            let now = new Date();
+            now.setHours(now.getHours() - 7); // Adjust to MST (UTC-7)
+            let formattedTime = now.toISOString().slice(0, 16).replace('T', ' ');
+            let formattedText = inputText.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+            formattedText = formattedText.replace(/<b>(.*?)<\/b>/g, '<strong>$1</strong>')
+                                         .replace(/<i>(.*?)<\/i>/g, '<em>$1</em>');
+            let outputHTML = `<div>\n    <h1>${formattedTime} MST</h1>\n    ${formattedText}\n</div>\n<br>`;
+            document.getElementById("output").textContent = outputHTML;
+        }
+
+        function copyToClipboard() {
+            let text = document.getElementById("output").textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Copied to clipboard!");
+            });
+        }
+
+        document.addEventListener("keydown", function(event) {
+            if (event.ctrlKey && event.key === "b") {
+                event.preventDefault();
+                isBold = !isBold;
+                document.execCommand("bold");
+            } else if (event.ctrlKey && event.key === "i") {
+                event.preventDefault();
+                isItalic = !isItalic;
+                document.execCommand("italic");
+            }
+        });
+    </script>
+    <style>
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+        }
+        #textInput {
+            width: 100%;
+            min-height: 100px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>Enter Text:</h2>
+    <div id="textInput" contenteditable="true"></div><br>
+    <button onclick="formatText()">Format</button>
+    <h2>Formatted HTML:</h2>
+    <pre id="output"></pre>
+    <button onclick="copyToClipboard()">Copy</button>
+</body>
+</html>
