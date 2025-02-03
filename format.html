@@ -8,17 +8,26 @@
         let isBold = false;
         let isItalic = false;
 
-        function formatText() {
-            let inputText = document.getElementById("textInput").innerHTML;
-            let now = new Date();
-            now.setHours(now.getHours() - 7); // Adjust to MST (UTC-7)
-            let formattedTime = now.toISOString().slice(0, 16).replace('T', ' ');
-            let formattedText = inputText.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
-            formattedText = formattedText.replace(/<b>(.*?)<\/b>/g, '<strong>$1</strong>')
-                                         .replace(/<i>(.*?)<\/i>/g, '<em>$1</em>');
-            let outputHTML = `<div>\n    <h1>${formattedTime} MST</h1>\n    ${formattedText}\n</div>\n<br>`;
-            document.getElementById("output").textContent = outputHTML;
-        }
+function formatText() {
+    let inputText = document.getElementById("textInput").innerText; // Use innerText to avoid extra <div> tags
+
+    let now = new Date();
+    now.setHours(now.getHours() - 7); // Adjust to MST (UTC-7)
+    let formattedTime = now.toISOString().slice(0, 16).replace('T', ' ');
+
+    // Convert newlines to HTML <br> correctly
+    let formattedText = inputText.replace(/\n\n+/g, '<br><br>') // Double newlines -> <br><br>
+                                 .replace(/\n/g, '<br>'); // Single newline -> <br>
+
+    // Replace <b> and <i> with <strong> and <em>
+    formattedText = formattedText.replace(/<b>(.*?)<\/b>/g, '<strong>$1</strong>')
+                                 .replace(/<i>(.*?)<\/i>/g, '<em>$1</em>');
+
+    let outputHTML = `<div>\n    <h1>${formattedTime} MST</h1>\n    ${formattedText}\n</div>\n<br>`;
+    document.getElementById("output").textContent = outputHTML;
+}
+
+
 
         function copyToClipboard() {
             let text = document.getElementById("output").textContent;
