@@ -3,31 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Formatter</title>
+    <title>Live HTML Formatter</title>
     <script>
-        let isBold = false;
-        let isItalic = false;
+        function formatText() {
+            let inputText = document.getElementById("textInput").innerHTML;
+            let now = new Date();
+            now.setHours(now.getHours() - 7);
+            let formattedTime = now.toISOString().slice(0, 16).replace('T', ' ');
 
-function formatText() {
-    let inputText = document.getElementById("textInput").innerText; // Use innerText to avoid extra <div> tags
+            let formattedText = inputText.replace(/\n\n+/g, '<br><br>')
+                                         .replace(/\n/g, '<br>');
+            
+            formattedText = formattedText.replace(/<b>(.*?)<\/b>/g, '<strong>$1</strong>')
+                                         .replace(/<i>(.*?)<\/i>/g, '<em>$1</em>')
+                                         .replace(/<i style="">(.*?)<\/i>/g, '<em>$1</em>');
 
-    let now = new Date();
-    now.setHours(now.getHours() - 7); // Adjust to MST (UTC-7)
-    let formattedTime = now.toISOString().slice(0, 16).replace('T', ' ');
-
-    // Convert newlines to HTML <br> correctly
-    let formattedText = inputText.replace(/\n\n+/g, '<br><br>') // Double newlines -> <br><br>
-                                 .replace(/\n/g, '<br>'); // Single newline -> <br>
-
-    // Replace <b> and <i> with <strong> and <em>
-    formattedText = formattedText.replace(/<b>(.*?)<\/b>/g, '<strong>$1</strong>')
-                                 .replace(/<i>(.*?)<\/i>/g, '<em>$1</em>');
-
-    let outputHTML = `<div>\n    <h1>${formattedTime} MST</h1>\n    ${formattedText}\n</div>\n<br>`;
-    document.getElementById("output").textContent = outputHTML;
-}
-
-
+            let outputHTML = `<div>\n    <h1>${formattedTime} MST</h1>\n    ${formattedText}\n</div>\n<br>`;
+            document.getElementById("output").textContent = outputHTML;
+        }
 
         function copyToClipboard() {
             let text = document.getElementById("output").textContent;
@@ -39,12 +32,22 @@ function formatText() {
         document.addEventListener("keydown", function(event) {
             if (event.ctrlKey && event.key === "b") {
                 event.preventDefault();
-                isBold = !isBold;
                 document.execCommand("bold");
+                document.querySelectorAll("b").forEach(el => {
+                    let strongEl = document.createElement("strong");
+                    strongEl.innerHTML = el.innerHTML;
+                    el.replaceWith(strongEl);
+                });
+                formatText();
             } else if (event.ctrlKey && event.key === "i") {
                 event.preventDefault();
-                isItalic = !isItalic;
                 document.execCommand("italic");
+                document.querySelectorAll("i").forEach(el => {
+                    let emEl = document.createElement("em");
+                    emEl.innerHTML = el.innerHTML;
+                    el.replaceWith(emEl);
+                });
+                formatText();
             }
         });
     </script>
@@ -66,8 +69,7 @@ function formatText() {
 </head>
 <body>
     <h2>Enter Text:</h2>
-    <div id="textInput" contenteditable="true"></div><br>
-    <button onclick="formatText()">Format</button>
+    <div id="textInput" contenteditable="true" oninput="formatText()"></div><br>
     <h2>Formatted HTML:</h2>
     <pre id="output"></pre>
     <button onclick="copyToClipboard()">Copy</button>
