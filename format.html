@@ -6,21 +6,25 @@
     <title>Live HTML Formatter</title>
     <script>
         function formatText() {
-            let inputText = document.getElementById("textInput").innerHTML;
-            let now = new Date();
-            now.setHours(now.getHours() - 7);
-            let formattedTime = now.toISOString().slice(0, 16).replace('T', ' ');
+    let rawText = document.getElementById("textInput").innerText;
+    let now = new Date();
+    now.setHours(now.getHours() - 7);
+    let formattedTime = now.toISOString().slice(0, 16).replace('T', ' ');
 
-            let formattedText = inputText.replace(/\n\n+/g, '<br><br>')
-                                         .replace(/\n/g, '<br>');
-            
-            formattedText = formattedText.replace(/<b>(.*?)<\/b>/g, '<strong>$1</strong>')
-                                         .replace(/<i>(.*?)<\/i>/g, '<em>$1</em>')
-                                         .replace(/<i style="">(.*?)<\/i>/g, '<em>$1</em>');
+    // Convert plain text line breaks to HTML <br>
+    let formattedText = rawText.replace(/\n\n+/g, '<br><br>')
+                               .replace(/\n/g, '<br>');
 
-            let outputHTML = `<div>\n    <h1>${formattedTime} MST</h1>\n    ${formattedText}\n</div>\n<br>`;
-            document.getElementById("output").textContent = outputHTML;
-        }
+    // Handle basic formatting tags (only if present in rawText)
+    formattedText = formattedText.replace(/<b>(.*?)<\/b>/g, '<strong>$1</strong>')
+                                 .replace(/<i>(.*?)<\/i>/g, '<em>$1</em>')
+                                 .replace(/<i style="">(.*?)<\/i>/g, '<em>$1</em>');
+
+    // Wrap everything in a single <div> after the header
+    let outputHTML = `<div>\n    <h1>${formattedTime} MST</h1>\n    <div>${formattedText}</div>\n</div>\n<br>`;
+    document.getElementById("output").textContent = outputHTML;
+}
+
 
         function copyToClipboard() {
             let text = document.getElementById("output").textContent;
