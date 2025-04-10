@@ -1,81 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live HTML Formatter</title>
-    <script>
-        function formatText() {
-    let rawText = document.getElementById("textInput").innerText;
-    let now = new Date();
-    now.setHours(now.getHours() - 7);
-    let formattedTime = now.toISOString().slice(0, 16).replace('T', ' ');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live HTML Formatter</title>
+  <style>
+    #textInput {
+      width: 100%;
+      min-height: 100px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      outline: none;
+    }
 
-    // Convert plain text line breaks to HTML <br>
-    let formattedText = rawText.replace(/\n\n+/g, '<br><br>')
-                               .replace(/\n/g, '<br>');
+    pre {
+      background-color: #f4f4f4;
+      padding: 10px;
+      border: 1px solid #ccc;
+      white-space: pre-wrap;
+    }
 
-    // Handle basic formatting tags (only if present in rawText)
-    formattedText = formattedText.replace(/<b>(.*?)<\/b>/g, '<strong>$1</strong>')
-                                 .replace(/<i>(.*?)<\/i>/g, '<em>$1</em>')
-                                 .replace(/<i style="">(.*?)<\/i>/g, '<em>$1</em>');
+    .preview-box {
+      margin-top: 2em;
+      padding: 1em;
+      background-color: #fffef0;
+      border: 2px dashed #aaa;
+    }
 
-    // Wrap everything in a single <div> after the header
-    let outputHTML = `<div>\n    <h1>${formattedTime} MST</h1>\n    <div>${formattedText}</div>\n</div>\n<br>`;
-    document.getElementById("output").textContent = outputHTML;
-}
+    /* Custom styles scoped only to preview */
+    #preview {
+      box-shadow: 0 0 0 black, 0 0 6em #8a4d0f inset;
+      background: #fffef0;
+      font-size: 1.25rem;
+    }
 
+    #preview * {
+      background: transparent;
+      font-family: 'Schoolbell', arial, serif;
+      color: #41403E;
+      padding: 0.5rem 0.5rem;
+      margin: .5rem .25rem .25rem;
+      outline: none;
+      box-shadow: 1em 1.5em 1.5em -1em rgba(0, 0, 0, 0.5);
+      border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+      box-sizing: border-box;
+      border: solid 0.1em #4140344E;
+      width: fit-content;
+      max-width: 99%;
+      overflow: hidden;
+    }
 
-        function copyToClipboard() {
-            let text = document.getElementById("output").textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Copied to clipboard!");
-            });
-        }
+    #preview pre,
+    #preview code {
+      font-family: Mono !important;
+    }
 
-        document.addEventListener("keydown", function(event) {
-            if (event.ctrlKey && event.key === "b") {
-                event.preventDefault();
-                document.execCommand("bold");
-                document.querySelectorAll("b").forEach(el => {
-                    let strongEl = document.createElement("strong");
-                    strongEl.innerHTML = el.innerHTML;
-                    el.replaceWith(strongEl);
-                });
-                formatText();
-            } else if (event.ctrlKey && event.key === "i") {
-                event.preventDefault();
-                document.execCommand("italic");
-                document.querySelectorAll("i").forEach(el => {
-                    let emEl = document.createElement("em");
-                    emEl.innerHTML = el.innerHTML;
-                    el.replaceWith(emEl);
-                });
-                formatText();
-            }
+    @font-face {
+      font-family: Mono;
+      src: url(Jackwrite.woff2);
+    }
+    @font-face {
+      font-family: Jackwrite;
+      src: url(Jackwrite.woff2);
+    }
+
+    #preview h1 {
+      font-family: Jackwrite !important;
+      font-size: 2rem !important;
+    }
+
+    #preview h2 {
+      font-size: 1.75rem !important;
+    }
+    #preview h3 {
+      font-size: 1.5rem !important;
+    }
+    #preview h4 {
+      font-size: 1.25rem !important;
+    }
+    #preview h5 {
+      font-size: 1.15rem !important;
+    }
+    #preview h6 {
+      font-size: 1.05rem !important;
+    }
+
+    #preview ol {
+      list-style-type: lower-roman;
+      list-style-position: inside;
+    }
+
+    #preview ul {
+      list-style-type: square;
+      list-style-position: inside;
+    }
+
+    #preview img,
+    #preview video,
+    #preview iframe {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
+  <script>
+    function formatText() {
+      let rawText = document.getElementById("textInput").innerText;
+      let now = new Date();
+      now.setHours(now.getHours() - 7);
+      let formattedTime = now.toISOString().slice(0, 16).replace('T', ' ');
+
+      let formattedText = rawText.replace(/\n\n+/g, '<br><br>')
+                                .replace(/\n/g, '<br>');
+
+      formattedText = formattedText.replace(/<b>(.*?)<\/b>/g, '<strong>$1</strong>')
+                                  .replace(/<i>(.*?)<\/i>/g, '<em>$1</em>')
+                                  .replace(/<i style="">(.*?)<\/i>/g, '<em>$1</em>');
+
+      let outputHTML = `<div>\n    <h1>${formattedTime} MST</h1>\n    <div>${formattedText}</div>\n</div>\n<br>`;
+      document.getElementById("output").textContent = outputHTML;
+      document.getElementById("preview").innerHTML = outputHTML;
+    }
+
+    function copyToClipboard() {
+      let text = document.getElementById("output").textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Copied to clipboard!");
+      });
+    }
+
+    document.addEventListener("keydown", function(event) {
+      if (event.ctrlKey && event.key === "b") {
+        event.preventDefault();
+        document.execCommand("bold");
+        document.querySelectorAll("b").forEach(el => {
+          let strongEl = document.createElement("strong");
+          strongEl.innerHTML = el.innerHTML;
+          el.replaceWith(strongEl);
         });
-    </script>
-    <style>
-        pre {
-            background-color: #f4f4f4;
-            padding: 10px;
-            border: 1px solid #ccc;
-            white-space: pre-wrap;
-        }
-        #textInput {
-            width: 100%;
-            min-height: 100px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            outline: none;
-        }
-    </style>
+        formatText();
+      } else if (event.ctrlKey && event.key === "i") {
+        event.preventDefault();
+        document.execCommand("italic");
+        document.querySelectorAll("i").forEach(el => {
+          let emEl = document.createElement("em");
+          emEl.innerHTML = el.innerHTML;
+          el.replaceWith(emEl);
+        });
+        formatText();
+      }
+    });
+  </script>
 </head>
 <body>
-    <h2>Enter Text:</h2>
-    <div id="textInput" contenteditable="true" oninput="formatText()"></div><br>
-    <h2>Formatted HTML:</h2>
-    <pre id="output"></pre>
-    <button onclick="copyToClipboard()">Copy</button>
+  <h2>Enter Text:</h2>
+  <div id="textInput" contenteditable="true" oninput="formatText()"></div><br>
+
+  <h2>Formatted HTML:</h2>
+  <pre id="output"></pre>
+  <button onclick="copyToClipboard()">Copy</button>
+
+  <h2>Preview:</h2>
+  <div id="preview" class="preview-box"></div>
 </body>
 </html>
